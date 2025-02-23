@@ -32,7 +32,7 @@ const Login = () =>{
                 {error && <p className="text-red-500">{error}</p>}
 
                 <form onSubmit={ manejoSubmit }>
-                    <div class="mb-3">
+                    <div className="mb-3">
                         <label className="form-label">Correo Electronico</label>
                         <div className="input-group">
                             <span className="input-group-text">
@@ -48,7 +48,7 @@ const Login = () =>{
                         </div>
                     </div>
 
-                    <div class="mb-4">
+                    <div className="mb-4">
                         <label className="form-label">Contraseña</label>
                         <div className="input-group">
                             <span className="input-group-text">
