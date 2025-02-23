@@ -1,7 +1,7 @@
 process.loadEnvFile()
 const express = require('express')
 const cors = require('cors')
-
+const { logger } = require('../config/Logger')
 const { authRouter } = require('../modules/router')
 
 const app = express()
@@ -10,6 +10,8 @@ app.set('port', process.env.PORT || 3001)
 
 app.use(cors({origins: '*'}))
 app.use(express.json({limit: '50mb'}))
+
+app.use(logger)
 
 app.get('/', (request, response) => {
     response.send('Esto es lo que viene a ser el APIRest')
