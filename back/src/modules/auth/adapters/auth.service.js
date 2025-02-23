@@ -1,5 +1,4 @@
 const { Person } = require('../../people/entities/Person')
-const { Rol } = require('../../people/entities/Rol')
 const { generateToken, verifyToken } = require('../../../config/jwt')
 const { hashPayload, comparePayload } = require('../../../utils/functions')
 const sequelize = require('../../../config/database')
@@ -10,10 +9,6 @@ const signin = async (email, password) => {
 
     const user = await Person.findOne({
         where: { correo: email },
-        include: {
-            model: Rol,
-            attributes: ['nombreRol']
-        }
     })
 
     if (!user) {
@@ -26,11 +21,11 @@ const signin = async (email, password) => {
         } else {
             const token = generateToken({
                 userEmail: user.correo,
-                userRole: user.Rol.nombreRol,
-                userName: user.nombre + user.apellidos
+                userRole: user.rol,
+                userName: `${user.nombre} ${user.apellidos}`
             })
 
-            const role = user.Rol.nombreRol
+            const role = user.rol
             const id = user.idUsuario
 
             return {token, role, id}

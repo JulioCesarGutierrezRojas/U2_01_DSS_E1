@@ -6,19 +6,23 @@ const Log = sequelize.define("Log", {
         type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true,
-        allowNull: false
+        allowNull: false,
+        field: 'id_bitacora',
     },
     nombreUsuario: {
         type: DataTypes.STRING(100),
-        allowNull: false
+        allowNull: false,
+        field: 'nombre_usuario',
     },
     fecha: {
         type: DataTypes.DATE,
-        allowNull: false
+        allowNull: false,
+        field: 'fecha',
     },
     operacion: {
         type: DataTypes.STRING(150),
-        allowNull: false
+        allowNull: false,
+        field: 'operacion',
     },
 },{
     tableName: 'bitacora',
