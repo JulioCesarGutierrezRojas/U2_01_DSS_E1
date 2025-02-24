@@ -40,7 +40,7 @@ const PeopleList = () => {
 
   return (
     <div className="d-flex justify-content-center align-items-center vh-100 bg-light">
-      <div className="card p-4 shadow-lg rounded-4" style={{ width: "35rem" }}>
+      <div className="card p-4 shadow-lg rounded-4" style={{ width: "65rem" }}>
         <h2 className="text-center mb-4">Lista de Usuarios</h2>
 
         <button
