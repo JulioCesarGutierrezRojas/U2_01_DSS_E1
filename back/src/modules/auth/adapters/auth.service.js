@@ -56,7 +56,14 @@ const changePassword = async (password, idUser) => {
     }
 }
 
+const getAllLogs = async () => {
+    const logs = await Log.findAll()
+
+    return logs
+}
+
 module.exports = {
     signin,
-    changePassword
+    changePassword,
+    getAllLogs
 }
