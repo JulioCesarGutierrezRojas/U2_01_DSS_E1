@@ -34,8 +34,10 @@ const savePerson = async (payload) => {
 
         return result
     } catch (error) {
-        throw new Error('Failed to registered user')
-    } 
+        console.error("Error in savePerson:", error); 
+        throw new Error('Failed to register user'); 
+    }
+    
 }
 
 //Mostrar todas las personas
@@ -56,7 +58,7 @@ const updatePerson = async (idUsuario, payload) => {
 
     if (!idUsuario) throw new Error('User ID is required');
     try {
-        await User.update({
+        await Person.update({
             nombre: payload.nombre,
             apellidos: payload.apellidos,
             correo: payload.correo,

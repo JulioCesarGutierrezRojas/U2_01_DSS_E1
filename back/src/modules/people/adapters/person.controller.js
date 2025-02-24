@@ -3,7 +3,7 @@ const personService = require ('./person.service')
 
 const registerPerson = async (req, res) => {
     try {
-        const person = await personService.registerPerson(req.body);
+        const person = await personService.savePerson(req.body);
         res.status(201).json({ message: person });
     } catch (error) {
         res.status(400).json({ message: error.message });
