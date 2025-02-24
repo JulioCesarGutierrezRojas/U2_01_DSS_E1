@@ -1,7 +1,7 @@
-import { useState, useEffect } from "react";
-import { FaEdit, FaTrash, FaPlus } from "react-icons/fa";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { FaPlus, FaEdit, FaTrash } from "react-icons/fa";
 
 const PeopleList = () => {
   const [users, setUsers] = useState([]);
@@ -10,29 +10,25 @@ const PeopleList = () => {
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
 
-  // Fetch users from the backend
   useEffect(() => {
     axios.get("http://localhost:3000/api/persons/getAll", {
       headers: {
-        Authorization: `Bearer ${token}`  // Asegúrate de pasar el token en las cabeceras
+        Authorization: `Bearer ${token}`
       }
     })
       .then(response => setUsers(response.data))
       .catch(error => console.error("Error al obtener los usuarios:", error));
   }, [token]);
 
-  // Handle edit action
   const handleEdit = (user) => {
-    console.log("Usuario a editar:", user);  // Verifica el objeto de usuario
     setEditingUser(user);
     setIsModalOpen(true);
   };
 
-  // Handle delete action
   const handleDelete = (id) => {
     axios.delete(`http://localhost:3000/api/persons/${id}`, {
       headers: {
-        Authorization: `Bearer ${token}`  // Asegúrate de pasar el token aquí también
+        Authorization: `Bearer ${token}`
       }
     })
       .then(() => {
@@ -41,35 +37,26 @@ const PeopleList = () => {
       .catch(error => console.error("Error al eliminar el usuario:", error));
   };
 
-  // Handle input changes while editing
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-
     setEditingUser(prevState => ({
       ...prevState,
       [name]: value
     }));
   };
 
-  // Save changes to the user
   const handleSaveChanges = () => {
-    console.log("Guardando cambios para el usuario con id:", editingUser.idUsuario);  // Verifica el id
-    
-    // Verificar los datos antes de enviar la solicitud
-    console.log("Datos del usuario editado:", editingUser);  // Muestra los datos completos
-
-    if (!editingUser.nombre || !editingUser.apellidos || !editingUser.correo || !editingUser.telefono || !editingUser.edad) {
+    if (!editingUser.nombre || !editingUser.apellidos || !editingUser.correo || !editingUser.telefono || !editingUser.edad || !editingUser.rol) {
       console.error("Faltan campos obligatorios");
       return;
     }
 
     axios.put(`http://localhost:3000/api/persons/update/${editingUser.idUsuario}`, editingUser, {
       headers: {
-        Authorization: `Bearer ${token}`  // Asegúrate de pasar el token en las cabeceras
+        Authorization: `Bearer ${token}`
       }
     })
-      .then(response => {
-        console.log("Respuesta del servidor:", response);  // Imprimir la respuesta
+      .then(() => {
         setUsers(users.map(user =>
           user.idUsuario === editingUser.idUsuario ? editingUser : user
         ));
@@ -80,14 +67,13 @@ const PeopleList = () => {
       });
   };
 
-  // Close the modal
   const handleCloseModal = () => {
     setIsModalOpen(false);
   };
 
   return (
     <div className="d-flex justify-content-center align-items-center vh-100 bg-light">
-      <div className="card p-4 shadow-lg rounded-4" style={{ width: "70rem" }}>
+      <div className="card p-4 shadow-lg rounded-4" style={{ width: "65rem" }}>
         <h2 className="text-center mb-4">Lista de Usuarios</h2>
 
         <button
@@ -100,8 +86,7 @@ const PeopleList = () => {
         <table className="table mt-3">
           <thead>
             <tr>
-              <th>Nombre</th>
-              <th>Apellidos</th>
+              <th>Nombre Completo</th>
               <th>Correo</th>
               <th>Teléfono</th>
               <th>Edad</th>
@@ -111,8 +96,7 @@ const PeopleList = () => {
           <tbody>
             {users.map(user => (
               <tr key={user.idUsuario}>
-                <td>{user.nombre}</td>
-                <td>{user.apellidos}</td>
+                <td>{user.nombre} {user.apellidos}</td>
                 <td>{user.correo}</td>
                 <td>{user.telefono}</td>
                 <td>{user.edad}</td>
