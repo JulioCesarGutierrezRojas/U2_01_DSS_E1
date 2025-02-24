@@ -87,7 +87,7 @@ const PeopleList = () => {
 
   return (
     <div className="d-flex justify-content-center align-items-center vh-100 bg-light">
-      <div className="card p-4 shadow-lg rounded-4" style={{ width: "65rem" }}>
+      <div className="card p-4 shadow-lg rounded-4" style={{ width: "70rem" }}>
         <h2 className="text-center mb-4">Lista de Usuarios</h2>
 
         <button
@@ -100,7 +100,8 @@ const PeopleList = () => {
         <table className="table mt-3">
           <thead>
             <tr>
-              <th>Nombre Completo</th>
+              <th>Nombre</th>
+              <th>Apellidos</th>
               <th>Correo</th>
               <th>Teléfono</th>
               <th>Edad</th>
@@ -110,7 +111,8 @@ const PeopleList = () => {
           <tbody>
             {users.map(user => (
               <tr key={user.idUsuario}>
-                <td>{user.nombre} {user.apellidos}</td>
+                <td>{user.nombre}</td>
+                <td>{user.apellidos}</td>
                 <td>{user.correo}</td>
                 <td>{user.telefono}</td>
                 <td>{user.edad}</td>
