@@ -1,41 +1,88 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { FaEdit, FaTrash, FaPlus } from "react-icons/fa";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const PeopleList = () => {
-  const [users, setUsers] = useState([
-    { id: 1, nomcompleto: "Juan Pérez", correo: "juan@example.com", telefono: "123456789", edad: 25 },
-    { id: 2, nomcompleto: "Ana Gómez", correo: "ana@example.com", telefono: "987654321", edad: 30 },
-  ]);
-  
-  const [editingUser, setEditingUser] = useState(null);  
-  const [isModalOpen, setIsModalOpen] = useState(false);  
-  
+  const [users, setUsers] = useState([]);
+  const [editingUser, setEditingUser] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const navigate = useNavigate();
+  const token = localStorage.getItem("token");
+
+  // Fetch users from the backend
+  useEffect(() => {
+    axios.get("http://localhost:3000/api/persons/getAll", {
+      headers: {
+        Authorization: `Bearer ${token}`  // Asegúrate de pasar el token en las cabeceras
+      }
+    })
+      .then(response => setUsers(response.data))
+      .catch(error => console.error("Error al obtener los usuarios:", error));
+  }, [token]);
+
+  // Handle edit action
   const handleEdit = (user) => {
-    setEditingUser(user);  
-    setIsModalOpen(true); 
+    console.log("Usuario a editar:", user);  // Verifica el objeto de usuario
+    setEditingUser(user);
+    setIsModalOpen(true);
   };
 
+  // Handle delete action
   const handleDelete = (id) => {
-    setUsers(users.filter(user => user.id !== id));
+    axios.delete(`http://localhost:3000/api/persons/${id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`  // Asegúrate de pasar el token aquí también
+      }
+    })
+      .then(() => {
+        setUsers(users.filter(user => user.idUsuario !== id));
+      })
+      .catch(error => console.error("Error al eliminar el usuario:", error));
   };
 
+  // Handle input changes while editing
   const handleInputChange = (e) => {
     const { name, value } = e.target;
+
     setEditingUser(prevState => ({
       ...prevState,
       [name]: value
     }));
   };
 
+  // Save changes to the user
   const handleSaveChanges = () => {
-    setUsers(users.map(user =>
-      user.id === editingUser.id ? editingUser : user
-    ));
-    setIsModalOpen(false);  
+    console.log("Guardando cambios para el usuario con id:", editingUser.idUsuario);  // Verifica el id
+    
+    // Verificar los datos antes de enviar la solicitud
+    console.log("Datos del usuario editado:", editingUser);  // Muestra los datos completos
+
+    if (!editingUser.nombre || !editingUser.apellidos || !editingUser.correo || !editingUser.telefono || !editingUser.edad) {
+      console.error("Faltan campos obligatorios");
+      return;
+    }
+
+    axios.put(`http://localhost:3000/api/persons/update/${editingUser.idUsuario}`, editingUser, {
+      headers: {
+        Authorization: `Bearer ${token}`  // Asegúrate de pasar el token en las cabeceras
+      }
+    })
+      .then(response => {
+        console.log("Respuesta del servidor:", response);  // Imprimir la respuesta
+        setUsers(users.map(user =>
+          user.idUsuario === editingUser.idUsuario ? editingUser : user
+        ));
+        setIsModalOpen(false);
+      })
+      .catch(error => {
+        console.error("Error al guardar los cambios:", error.response ? error.response.data : error.message);
+      });
   };
 
+  // Close the modal
   const handleCloseModal = () => {
-    setIsModalOpen(false); 
+    setIsModalOpen(false);
   };
 
   return (
@@ -62,8 +109,8 @@ const PeopleList = () => {
           </thead>
           <tbody>
             {users.map(user => (
-              <tr key={user.id}>
-                <td>{user.nomcompleto}</td>
+              <tr key={user.idUsuario}>
+                <td>{user.nombre} {user.apellidos}</td>
                 <td>{user.correo}</td>
                 <td>{user.telefono}</td>
                 <td>{user.edad}</td>
@@ -71,7 +118,7 @@ const PeopleList = () => {
                   <button onClick={() => handleEdit(user)} className="btn btn-warning btn-sm me-2">
                     <FaEdit />
                   </button>
-                  <button onClick={() => handleDelete(user.id)} className="btn btn-danger btn-sm">
+                  <button onClick={() => handleDelete(user.idUsuario)} className="btn btn-danger btn-sm">
                     <FaTrash />
                   </button>
                 </td>
@@ -80,7 +127,6 @@ const PeopleList = () => {
           </tbody>
         </table>
 
-       
         {isModalOpen && editingUser && (
           <div className="modal show d-block" tabIndex="-1" style={{ display: 'block' }}>
             <div className="modal-dialog">
@@ -91,11 +137,21 @@ const PeopleList = () => {
                 </div>
                 <div className="modal-body">
                   <div className="mb-3">
-                    <label className="form-label">Nombre Completo</label>
+                    <label className="form-label">Nombre</label>
                     <input
                       type="text"
-                      name="nomcompleto"
-                      value={editingUser.nomcompleto}
+                      name="nombre"
+                      value={editingUser.nombre}
+                      onChange={handleInputChange}
+                      className="form-control"
+                    />
+                  </div>
+                  <div className="mb-3">
+                    <label className="form-label">Apellidos</label>
+                    <input
+                      type="text"
+                      name="apellidos"
+                      value={editingUser.apellidos}
                       onChange={handleInputChange}
                       className="form-control"
                     />
