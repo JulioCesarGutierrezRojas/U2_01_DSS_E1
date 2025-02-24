@@ -15,6 +15,35 @@ const Login = () =>{
 
     const manejoSubmit = async (e) => {
         e.preventDefault();
+
+        // Validaciones
+        if (!email.trim()) {
+            setError("El correo no puede estar vacío");
+            return;
+        } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+            setError("Ingrese un correo válido");
+            return;
+        }
+
+        if (email.trim() !== email) {
+            setError("El correo no puede tener espacios al principio o al final");
+            return;
+        }
+
+        if (!password.trim()) {
+            setError("La contraseña no puede estar vacía");
+            return;
+        }
+
+        if (password.length < 6) {
+            setError("La contraseña debe tener al menos 6 caracteres");
+            return;
+        }
+
+        if (password.trim() !== password) {
+            setError("La contraseña no puede tener espacios al principio o al final");
+            return;
+        }
     
         const response = await login(email, password); 
     
@@ -30,7 +59,6 @@ const Login = () =>{
             <div className="card p-4 shadow-lg rounded-4" style={{ width: "25rem", height: "400px" }}>
 
                 <h2 className="text-center mb-5">Iniciar Sesión</h2>
-                {error && <p className="text-red-500">{error}</p>}
 
                 <form onSubmit={ manejoSubmit }>
                     <div className="mb-3">
@@ -71,6 +99,8 @@ const Login = () =>{
                             </button>
                         </div>
                     </div>
+
+                    {error && (<p className="text-danger text-center my-2 mb-3">{error}</p>)}
                 
                     <button type="submit" className="btn btn-primary w-100">
                         Iniciar sesión
