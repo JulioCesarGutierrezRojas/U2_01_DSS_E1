@@ -55,17 +55,21 @@ const getAllPersons = async () => {
 
 //Actualizar personb
 const updatePerson = async (idUsuario, payload) => {
-
     if (!idUsuario) throw new Error('User ID is required');
     try {
-        await Person.update({
+        const updatedData = {
             nombre: payload.nombre,
             apellidos: payload.apellidos,
             correo: payload.correo,
-            contrasenia: await hashPayload(payload.contrasenia),
             telefono: payload.telefono,
             edad: payload.edad,
-            rol: payload.rol,
+        };
+
+       
+        await Person.update(updatedData, {
+            where: {
+                idUsuario: idUsuario
+            }
         });
 
     } catch (error) {
