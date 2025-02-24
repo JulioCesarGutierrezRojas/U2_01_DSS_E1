@@ -1,22 +1,37 @@
+import axios from "axios";
 
-const login = (email, password) => {
+const API_URL = "http://localhost:3000/api/auth";
 
-    // Simulación de autenticación
-    if (email === "admin@example.com" && password === "123456") {
-      localStorage.setItem("user", JSON.stringify({ email }));
-      return { success: true, user: { email } };
+const login = async (email, password) => {
+    try {
+        const response = await axios.post(API_URL, { email, password });
+
+        const { token } = response.data;
+        localStorage.setItem("token", token);
+        return { success: true, token };
+
+    } catch (error) {
+        return { success: false, message: "Credenciales incorrectas" };
     }
-    return { success: false, message: "Credenciales incorrectas" };
 };
-  
 
 const logout = () => {
-    localStorage.removeItem("user");
+    localStorage.removeItem("token");
+    localStorage.removeItem("role");
+    localStorage.removeItem("userId");
 };
-  
-const getUser = () => {
-    return JSON.parse(localStorage.getItem("user"));
+
+const getToken = () => localStorage.getItem("token");
+
+const getUserRole = () => localStorage.getItem("role");
+
+const getUserId = () => localStorage.getItem("userId");
+
+export { 
+    login, 
+    logout, 
+    getToken, 
+    getUserRole, 
+    getUserId 
 };
-  
-export { login, logout, getUser };
   

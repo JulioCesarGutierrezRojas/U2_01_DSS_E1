@@ -13,22 +13,23 @@ const Login = () =>{
     const [error, setError] = useState("");
     const [mostrarPassword, setMostrarPassword] = useState(false);
 
-    const manejoSubmit = (e) =>{
+    const manejoSubmit = async (e) => {
         e.preventDefault();
-
-        const response = login(email, password);
+    
+        const response = await login(email, password); 
+    
         if (response.success) {
             navigate("/usersList");
-        }else{
+        } else {
             setError(response.message);
         }
-    }
+    };
 
     return(
         <div className="d-flex justify-content-center align-items-center vh-100 bg-light">
             <div className="card p-4 shadow-lg rounded-4" style={{ width: "25rem", height: "400px" }}>
 
-                <h2 className="text-center mb-4">Iniciar Sesión</h2>
+                <h2 className="text-center mb-5">Iniciar Sesión</h2>
                 {error && <p className="text-red-500">{error}</p>}
 
                 <form onSubmit={ manejoSubmit }>
