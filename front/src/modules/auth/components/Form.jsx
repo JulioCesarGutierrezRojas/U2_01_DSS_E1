@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Form, Button, Container, InputGroup } from "react-bootstrap";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2"; 
 
 function RegisterForm() {
   const [formData, setFormData] = useState({

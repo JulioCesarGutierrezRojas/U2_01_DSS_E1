@@ -3,7 +3,7 @@ import axios from "axios";
 import { href, Navigate, useNavigate } from "react-router-dom";
 import { FaPlus, FaEdit, FaTrash } from "react-icons/fa";
 import { ImAddressBook } from "react-icons/im";
-import Swal from "sweetalert2"; // Importar SweetAlert2
+import Swal from "sweetalert2"; 
 
 const PeopleList = () => {
   const [users, setUsers] = useState([]);
