@@ -39,11 +39,11 @@ const Bitacora = () =>{
                         </tr>
                       </thead>
                       <tbody>
-                        {users.map(user => (
-                          <tr key={user.idUsuario}>
-                            <td>{user.nombre} {user.apellidos}</td>
-                            <td>{user.date}</td>
-                            <td>{user.operacion}</td>
+                        {users.map(log => (
+                          <tr key={log.idBitacora}>
+                            <td>{log.nombreUsuario}</td>
+                            <td>{log.fecha}</td>
+                            <td>{log.operacion}</td>
                           </tr>
                         ))}
                       </tbody>
