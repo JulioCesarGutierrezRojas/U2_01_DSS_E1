@@ -131,7 +131,7 @@ function RegisterForm() {
 
           <Form.Group className="mb-3">
             <Form.Label>Teléfono:</Form.Label>
-            <Form.Control type="tel" name="telefono" value={formData.telefono} onChange={handleInputChange} isInvalid={!!errors.telefono} />
+            <Form.Control type="tel" name="telefono" value={formData.telefono} onChange={handleInputChange} isInvalid={!!errors.telefono} maxLength="10"/>
             <Form.Control.Feedback type="invalid">{errors.telefono}</Form.Control.Feedback>
           </Form.Group>
 
