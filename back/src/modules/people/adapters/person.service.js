@@ -4,7 +4,7 @@ const sequelize = require('../../../config/database')
 
 //Registrar persona
 const savePerson = async (payload) => {
-    if (!payload.nombre || !payload.apellidos || !payload.correo || !payload.contrasenia || !payload.telefono || !payload.edad || !payload.rol )
+    if (!payload.nombre || !payload.apellidos || !payload.correo || !payload.telefono || !payload.edad || !payload.rol )
         throw new Error('Missing fields')
 
     const duplicateEmail = await Person.findOne({
@@ -17,22 +17,17 @@ const savePerson = async (payload) => {
         throw new Error('This email is already in use')
 
     try {
-        const result = await sequelize.transaction(async (transaction) => {
-            
-            const person = await Person.create({
-                nombre: payload.nombre,
-                apellidos: payload.apellidos,
-                correo: payload.correo,
-                contrasenia: await hashPayload(payload.contrasenia),
-                telefono: payload.telefono,
-                edad: payload.edad,
-                rol: payload.rol,
-            })
-    
-            return message = 'Person registered succesfully'
+        await Person.create({
+            nombre: payload.nombre,
+            apellidos: payload.apellidos,
+            correo: payload.correo,
+            telefono: payload.telefono,
+            edad: payload.edad,
+            rol: payload.rol,
         })
+    
+        return message = 'Person registered succesfully'
 
-        return result
     } catch (error) {
         console.error("Error in savePerson:", error); 
         throw new Error('Failed to register user'); 

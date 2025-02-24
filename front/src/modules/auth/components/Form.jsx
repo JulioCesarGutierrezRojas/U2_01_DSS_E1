@@ -8,14 +8,12 @@ function RegisterForm() {
     nombre: "",
     apellidos: "",
     correo: "",
-    contrasenia: "",
     telefono: "",
     edad: "",
     rol: "",
   });
 
   const [errors, setErrors] = useState({});
-  const [showPassword, setShowPassword] = useState(false);
 
   const validateForm = () => {
     let newErrors = {};
@@ -38,11 +36,11 @@ function RegisterForm() {
       newErrors.correo = "Ingrese un correo válido.";
     }
 
-    if (!formData.contrasenia.trim()) {
+    /*if (!formData.contrasenia.trim()) {
       newErrors.contrasenia = "La contraseña es obligatoria.";
     } else if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$/.test(formData.contrasenia)) {
       newErrors.contrasenia = "Debe tener al menos 6 caracteres, mayúsculas, minúsculas, un número y un carácter especial.";
-    }
+    }*/
 
     if (!formData.telefono.trim()) {
       newErrors.telefono = "El teléfono es obligatorio.";
@@ -72,44 +70,37 @@ function RegisterForm() {
     e.preventDefault();
   
     if (validateForm()) {
-      console.log("Datos a enviar:", formData);
-  
       try {
         const token = localStorage.getItem("token");
+
         if (!token) {
           alert("Token not provided. Inicia sesión primero.");
           return;
         }
-  
-        const response = await axios.post(
-          "http://localhost:3000/api/persons/register",
-          JSON.stringify(formData), 
-          {
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
+
+        await axios.post(
+            "http://localhost:3000/api/persons/register",
+            {
+              nombre: formData.nombre,
+              apellidos: formData.apellidos,
+              correo: formData.correo,
+              telefono: formData.telefono,
+              edad: formData.edad,
+              rol: 'usuario'
             },
-          }
+            {
+              headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`,
+              }
+            }
         );
-        
-  
-        console.log("Registro exitoso:", response.data);
-        alert("Registro exitoso");
-  
-        setFormData({
-          nombre: "",
-          apellidos: "",
-          correo: "",
-          contrasenia: "",
-          telefono: "",
-          edad: "",
-          rol: "",
-        });
-  
+
+        alert('Registro Exitoso')
+
         setErrors({});
       } catch (error) {
-        console.error("Error en el registro:", error.response?.data || error.message);
-        alert(error.response?.data?.message || "Error en el registro");
+        alert(error.message)
       }
     }
   };
@@ -139,23 +130,6 @@ function RegisterForm() {
           </Form.Group>
 
           <Form.Group className="mb-3">
-            <Form.Label>Contraseña:</Form.Label>
-            <InputGroup>
-              <Form.Control
-                type={showPassword ? "text" : "password"}
-                name="contrasenia"
-                value={formData.contrasenia}
-                onChange={handleInputChange}
-                isInvalid={!!errors.contrasenia}
-              />
-              <Button variant="outline-secondary" onClick={() => setShowPassword(!showPassword)}>
-                {showPassword ? <EyeSlash /> : <Eye />}
-              </Button>
-              <Form.Control.Feedback type="invalid">{errors.contrasenia}</Form.Control.Feedback>
-            </InputGroup>
-          </Form.Group>
-
-          <Form.Group className="mb-3">
             <Form.Label>Teléfono:</Form.Label>
             <Form.Control type="tel" name="telefono" value={formData.telefono} onChange={handleInputChange} isInvalid={!!errors.telefono} />
             <Form.Control.Feedback type="invalid">{errors.telefono}</Form.Control.Feedback>
@@ -165,14 +139,6 @@ function RegisterForm() {
             <Form.Label>Edad:</Form.Label>
             <Form.Control type="number" name="edad" value={formData.edad} onChange={handleInputChange} isInvalid={!!errors.edad} />
             <Form.Control.Feedback type="invalid">{errors.edad}</Form.Control.Feedback>
-          </Form.Group>
-
-          <Form.Group className="mb-4">
-            <Form.Label>Rol:</Form.Label>
-            <Form.Select name="rol" value={formData.rol} onChange={handleInputChange}>
-              <option value="usuario">Usuario</option>
-              <option value="admin">Admin</option>
-            </Form.Select>
           </Form.Group>
 
           <Button type="submit" variant="primary" className="w-100">
