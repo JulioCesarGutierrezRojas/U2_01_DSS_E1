@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { FaPlus, FaEdit, FaTrash } from "react-icons/fa";
+import Swal from "sweetalert2"; // Importar SweetAlert2
 
 const PeopleList = () => {
   const [users, setUsers] = useState([]);
@@ -16,8 +17,8 @@ const PeopleList = () => {
         Authorization: `Bearer ${token}`
       }
     })
-      .then(response => setUsers(response.data))
-      .catch(error => console.error("Error al obtener los usuarios:", error));
+    .then(response => setUsers(response.data))
+    .catch(error => console.error("Error al obtener los usuarios:", error));
   }, [token]);
 
   const handleEdit = (user) => {
@@ -26,15 +27,31 @@ const PeopleList = () => {
   };
 
   const handleDelete = (id) => {
-    axios.delete(`http://localhost:3000/api/persons/${id}`, {
-      headers: {
-        Authorization: `Bearer ${token}`
+    // Usar SweetAlert2 para la confirmación antes de eliminar
+    Swal.fire({
+      title: "¿Estás seguro?",
+      text: "No podrás revertir esto después de eliminar el usuario.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Sí, eliminar",
+      cancelButtonText: "Cancelar",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        axios.delete(`http://localhost:3000/api/persons/delete/${id}`, {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        })
+        .then(() => {
+          setUsers(users.filter(user => user.idUsuario !== id));
+          Swal.fire("Eliminado", "El usuario ha sido eliminado exitosamente.", "success");
+        })
+        .catch(error => {
+          console.error("Error al eliminar el usuario:", error);
+          Swal.fire("Error", "Hubo un error al eliminar el usuario.", "error");
+        });
       }
-    })
-      .then(() => {
-        setUsers(users.filter(user => user.idUsuario !== id));
-      })
-      .catch(error => console.error("Error al eliminar el usuario:", error));
+    });
   };
 
   const handleInputChange = (e) => {
@@ -46,25 +63,50 @@ const PeopleList = () => {
   };
 
   const handleSaveChanges = () => {
+    // Verificar que todos los campos sean válidos
     if (!editingUser.nombre || !editingUser.apellidos || !editingUser.correo || !editingUser.telefono || !editingUser.edad || !editingUser.rol) {
       console.error("Faltan campos obligatorios");
+      Swal.fire("Advertencia", "Por favor, complete todos los campos.", "warning");
       return;
     }
 
-    axios.put(`http://localhost:3000/api/persons/update/${editingUser.idUsuario}`, editingUser, {
-      headers: {
-        Authorization: `Bearer ${token}`
+    // Validar que el teléfono tenga exactamente 10 dígitos
+    const telefonoRegex = /^\d{10}$/;
+    if (!telefonoRegex.test(editingUser.telefono)) {
+      console.error("El número de teléfono debe tener 10 dígitos.");
+      Swal.fire("Error", "El número de teléfono debe tener exactamente 10 dígitos.", "error");
+      return;
+    }
+
+    // Mostrar alerta de confirmación antes de guardar los cambios
+    Swal.fire({
+      title: "¿Estás seguro de guardar los cambios?",
+      text: "Estos cambios se guardarán permanentemente.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Sí, guardar",
+      cancelButtonText: "Cancelar"
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // Si el usuario confirma, proceder con la actualización
+        axios.put(`http://localhost:3000/api/persons/update/${editingUser.idUsuario}`, editingUser, {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        })
+        .then(() => {
+          setUsers(users.map(user =>
+            user.idUsuario === editingUser.idUsuario ? editingUser : user
+          ));
+          setIsModalOpen(false);
+          Swal.fire("Éxito", "Cambios guardados correctamente", "success");
+        })
+        .catch(error => {
+          console.error("Error al guardar los cambios:", error.response ? error.response.data : error.message);
+          Swal.fire("Error", "Hubo un error al guardar los cambios.", "error");
+        });
       }
-    })
-      .then(() => {
-        setUsers(users.map(user =>
-          user.idUsuario === editingUser.idUsuario ? editingUser : user
-        ));
-        setIsModalOpen(false);
-      })
-      .catch(error => {
-        console.error("Error al guardar los cambios:", error.response ? error.response.data : error.message);
-      });
+    });
   };
 
   const handleCloseModal = () => {
@@ -160,6 +202,7 @@ const PeopleList = () => {
                       value={editingUser.telefono}
                       onChange={handleInputChange}
                       className="form-control"
+                      maxLength="10"
                     />
                   </div>
                   <div className="mb-3">
