@@ -5,28 +5,27 @@ export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(() => {
-        const storedUser = sessionStorage.getItem("user");
+        const storedUser = localStorage.getItem("user");
         return storedUser ? JSON.parse(storedUser) : null;
     });
 
     useEffect(() => {
-        const storedUser = sessionStorage.getItem("user");
+        const storedUser = localStorage.getItem("user");
         if (storedUser) {
             setUser(JSON.parse(storedUser));
         }
     }, []);
-
 
     const login = async (email, password) => {
         try {
             const response = await loginService(email, password);
 
             if (response.success) {
-                const { id, role } = response;
+                const { token, userId, role } = response;
 
-                const newUser = { id, role };
+                const newUser = { token, userId, role };
                 setUser(newUser);
-                sessionStorage.setItem("user", JSON.stringify(newUser));
+                localStorage.setItem("user", JSON.stringify(newUser));
 
                 return { success: true };
             } else {
@@ -38,11 +37,10 @@ export const AuthProvider = ({ children }) => {
         }
     };
 
-    
     const logout = () => {
         logoutService();
         setUser(null);
-        sessionStorage.removeItem("user");
+        localStorage.removeItem("user");
     };
 
     return (
