@@ -1,4 +1,5 @@
 const { Person } = require('../../people/entities/Person')
+const { Log } = require('../../auth/entities/Log')
 const { generateToken, verifyToken } = require('../../../config/jwt')
 const { hashPayload, comparePayload } = require('../../../utils/functions')
 const sequelize = require('../../../config/database')
@@ -56,7 +57,14 @@ const changePassword = async (password, idUser) => {
     }
 }
 
+const getAllLogs = async () => {
+    const logs = await Log.findAll()
+
+    return logs
+}
+
 module.exports = {
     signin,
-    changePassword
+    changePassword,
+    getAllLogs
 }

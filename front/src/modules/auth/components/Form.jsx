@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Form, Button, Container, InputGroup } from "react-bootstrap";
 import axios from "axios";
-import Swal from "sweetalert2";
+import { useNavigate } from "react-router-dom";
 
 function RegisterForm() {
   const [formData, setFormData] = useState({
@@ -106,12 +106,17 @@ function RegisterForm() {
     }
   };
   
+  const navigate = useNavigate();
+  const handleRegresar = () => {
+    navigate("/usersList"); 
+  };
+
 
   return (
     <Container className="d-flex justify-content-center align-items-center vh-100">
       <div className="form-box p-4 shadow rounded bg-light" style={{ width: "30rem" }}>
         <h2 className="text-center mb-4">Registro</h2>
-        <Form onSubmit={handleSubmit}>
+        <Form onSubmit={handleSubmit} className="mb-4">
           <Form.Group className="mb-3">
             <Form.Label>Nombre:</Form.Label>
             <Form.Control type="text" name="nombre" value={formData.nombre} onChange={handleInputChange} isInvalid={!!errors.nombre} />
@@ -146,6 +151,11 @@ function RegisterForm() {
             Registrar
           </Button>
         </Form>
+
+        <Button onClick={handleRegresar} variant="secondary" className="w-100">
+          Regresar a la Lista de Usuarios
+        </Button>
+        
       </div>
     </Container>
   );

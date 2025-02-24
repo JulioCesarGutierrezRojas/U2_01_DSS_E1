@@ -27,7 +27,18 @@ const changePassword = async (req, res) => {
     }
 }
 
+const getAllLogs = async (req, res) => {
+    try {
+        const logs = await authService.getAllLogs()
+        res.status(200).json(logs)
+    } catch (error) {
+        console.error(error)
+        res.status(400).json({ message: `${error}` })
+    }
+}
+
 module.exports = {
     signin,
-    changePassword
+    changePassword,
+    getAllLogs
 }
