@@ -2,7 +2,7 @@ process.loadEnvFile()
 const express = require('express')
 const cors = require('cors')
 const { logger } = require('../config/Logger')
-const { authRouter } = require('../modules/router')
+const { authRouter , personRouter} = require('../modules/router')
 
 const app = express()
 
@@ -29,7 +29,8 @@ app.get('/', (request, response) => {
  * las cuales se importaron mas arriba
  */
 
-app.use('/api/auth', authRouter)
+app.use('/api/auth', authRouter),
+app.use('/api/persons', personRouter)
 
 module.exports = {
     app
