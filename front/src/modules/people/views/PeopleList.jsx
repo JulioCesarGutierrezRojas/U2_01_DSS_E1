@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { href, Navigate, useNavigate } from "react-router-dom";
 import { FaPlus, FaEdit, FaTrash } from "react-icons/fa";
+import { ImAddressBook } from "react-icons/im";
 import Swal from "sweetalert2"; // Importar SweetAlert2
 
 const PeopleList = () => {
@@ -12,6 +13,7 @@ const PeopleList = () => {
   const token = localStorage.getItem("token");
 
   useEffect(() => {
+  
     axios.get("http://localhost:3000/api/persons/getAll", {
       headers: {
         Authorization: `Bearer ${token}`
@@ -155,6 +157,8 @@ const PeopleList = () => {
           </tbody>
         </table>
 
+        
+
         {isModalOpen && editingUser && (
           <div className="modal show d-block" tabIndex="-1" style={{ display: 'block' }}>
             <div className="modal-dialog">
@@ -227,8 +231,15 @@ const PeopleList = () => {
               </div>
             </div>
           </div>
+          
         )}
       </div>
+      <button
+          className="btn btn-primary mb-3"
+          onClick={() => navigate("/bitacora")}
+        >
+          <ImAddressBook /> Bitacora
+        </button>
     </div>
   );
 };

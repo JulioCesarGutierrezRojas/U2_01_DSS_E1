@@ -6,7 +6,7 @@
   import Form from "../modules/auth/components/Form";
   import PanelPerson from "../modules/people/views/panelPerson.jsx";
   import ErrorPage403 from "../modules/people/views/error403";
-
+  import Bitacora from "../modules/people/bitacora.jsx";
 
   const AppRouter = () => {
     return (
@@ -16,6 +16,7 @@
             <Route path="/" element={<Login />} />
             <Route path="/usersList" element={<PrivateRoutes role="admin"> <PeopleList /> </PrivateRoutes>}/>
             <Route path="/usersForm"element={<PrivateRoutes role="admin"><Form /></PrivateRoutes>}/>
+            <Route path="/bitacora" element={<PrivateRoutes role="admin"><Bitacora></Bitacora></PrivateRoutes>}/>
             
             <Route path="/userPanel" element={ <PrivateRoutes role="usuario"><PanelPerson /></PrivateRoutes> }/>
 

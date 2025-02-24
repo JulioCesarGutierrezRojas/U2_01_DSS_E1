@@ -9,16 +9,28 @@ const PrivateRoutes = ({ role, children }) => {
     return <Navigate to="/" />;
   }
 
+  if (role === null ) {
+    return <Navigate to="/" />;
+  }
+
   if (role === "admin" && user.role !== "admin") {
     return <Navigate to="/userPanel" />;
   }
 
   if (role === "usuario" && user.role !== "usuario") {
-    return <Navigate to="/" />; 
+    return <Navigate to="/" />;
   }
 
   if (!user || user.role !== role) {
-    window.location.href = "/403";  
+    return <Navigate to="/403" />;
+  }
+
+  if (!user || user.role !== role) {
+    return <Navigate to="/403" />;
+  }
+
+  if (!user) {
+    return <Navigate to="/403" />;
   }
 
   return children || <Outlet />;

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Form, Button, Container, InputGroup } from "react-bootstrap";
-import { Eye, EyeSlash } from "react-bootstrap-icons";
 import axios from "axios";
+import Swal from "sweetalert2";
 
 function RegisterForm() {
   const [formData, setFormData] = useState({
@@ -96,11 +96,12 @@ function RegisterForm() {
             }
         );
 
-        alert('Registro Exitoso')
+        Swal.fire("Éxito", "El usuario ha sido registrado exitosamente.", "success");
 
         setErrors({});
       } catch (error) {
-        alert(error.message)
+        Swal.fire("Ha ocurrido un error", error.message, "error");
+        
       }
     }
   };
