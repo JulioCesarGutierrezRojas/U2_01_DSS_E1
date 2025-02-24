@@ -35,8 +35,8 @@ const Login = () =>{
             return;
         }
 
-        if (password.length < 6) {
-            setError("La contraseña debe tener al menos 6 caracteres");
+        if (password.length < 5) {
+            setError("La contraseña debe tener al menos 5 caracteres");
             return;
         }
 
