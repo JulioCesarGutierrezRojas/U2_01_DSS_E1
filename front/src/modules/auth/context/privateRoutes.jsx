@@ -17,6 +17,10 @@ const PrivateRoutes = ({ role, children }) => {
     return <Navigate to="/" />; 
   }
 
+  if (!user || user.role !== role) {
+    window.location.href = "/403";  
+  }
+
   return children || <Outlet />;
 };
 
